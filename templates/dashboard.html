@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background: linear-gradient(to right, #e0f2f1, #f0f4c3);
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: scale(1.02);
+        }
+        .stat {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00796b;
+        }
+        .title {
+            font-size: 1.2rem;
+            color: #555;
+        }
+        .section-title {
+            font-weight: bold;
+            color: #00796b;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+<div class="container py-5">
+    <h1 class="text-center text-success mb-5">📊 Customer Insights Dashboard</h1>
+
+    <div class="row text-center">
+        <div class="col-md-3">
+            <div class="card p-3">
+                <div class="stat" id="total-customers">--</div>
+                <div class="title">Total Customers</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3">
+                <div class="stat" id="avg-purchase">--</div>
+                <div class="title">Avg. Purchase</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3">
+                <div class="stat" id="popular-category">--</div>
+                <div class="title">Popular Category</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3">
+                <div class="stat" id="churn-rate">--</div>
+                <div class="title">Churn Rate</div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="section-title">📈 Visualizations</h3>
+    <div class="row">
+        <div class="col-md-6">
+            <canvas id="purchaseAmountChart"></canvas>
+        </div>
+        <div class="col-md-6">
+            <canvas id="churnChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    
+    document.getElementById('total-customers').innerText = '{{ total_customers }}';
+    document.getElementById('avg-purchase').innerText = '{{ avg_purchase }}';
+    document.getElementById('popular-category').innerText = '{{ popular_category }}';
+    document.getElementById('churn-rate').innerText = '{{ churn_rate }}';
+
+   
+    const ctx1 = document.getElementById('purchaseAmountChart').getContext('2d');
+    const purchaseAmountChart = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: {{ labels1 | safe }},
+            datasets: [{
+                label: 'Total Purchase Amount',
+                data: {{ values1 | safe }},
+                backgroundColor: '#26a69a'
+            }]
+        }
+    });
+
+    const ctx2 = document.getElementById('churnChart').getContext('2d');
+    const churnChart = new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+            labels: ['Churned', 'Active'],
+            datasets: [{
+                label: 'Churn Status',
+                data: [{{ churned }}, {{ active }}],
+                backgroundColor: ['#e57373', '#81c784']
+            }]
+        }
+    });
+</script>
+</body>
+</html>
